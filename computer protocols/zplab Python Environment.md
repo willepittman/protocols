@@ -45,8 +45,6 @@ zle -N history-beginning-search-backward-end history-search-end
 zle -N history-beginning-search-forward-end history-search-end
 
 bindkey -e
-bindkey "${key[Up]}" history-beginning-search-backward-end
-bindkey "${key[Down]}" history-beginning-search-forward-end
 
 autoload -U colors && colors
 prompt="%{$bold_color$fg[red]%}[%{$fg[blue]%}%n@%m:%{$fg[green]%}%25<..<%~%<<%{$fg[red]%}]%{$fg[green]%}%(!.#.>)%{$reset_color%} "
@@ -65,12 +63,16 @@ EOF
 
 - some OS-specific options.  
     **On OS X:**
-    
+      
+      echo "bindkey "^[[A" history-beginning-search-backward-end" >> ~/.zshrc
+      echo "bindkey "^[[B" history-beginning-search-forward-end" >> ~/.zshrc
       echo "export CLICOLOR=1" >> ~/.zshrc
       echo "export LSCOLORS='ExfxcxdxbxegedabagExEx'" >> ~/.zshrc
 
     **On Linux:**
-    
+      
+      echo "bindkey "${key[Up]}" history-beginning-search-backward-end" >> ~/.zshrc
+      echo "bindkey "${key[Down]}" history-beginning-search-forward-end" >> ~/.zshrc
       echo "alias ls='ls --color=auto'" >> ~/.zshrc
 
 
@@ -97,7 +99,8 @@ EOF
 - Set up the standard zplab python environment:
 
 ```
-cat > user_env.yml << EOF
+cat > zplab.yml << EOF
+name: zplab
 channels:
     - defaults
     - conda-forge
@@ -123,8 +126,8 @@ dependencies:
         - git+https://github.com/zplab/zplib
         - git+https://github.com/zplab/RisWidget
 EOF
-conda env update -f user_env.yml
-rm user_env.yml
+conda env create -f zplab.yml
+source activate zplab
 ```
 
 - If you ever need to update to get the latest version of any of the zplab-specific libraries, you can run lines like the following:
